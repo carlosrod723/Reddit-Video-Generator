@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reddit Video Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Main Menu Section -->
+    <div class="container" id="mainMenu">
+        <div class="app-header">
+            <h1 class="app-title">Reddit Video Generator</h1>
+            <div class="header-line"></div>
+            <p class="app-subtitle">Transform Reddit content into engaging videos</p>
+        </div>
+        
+        <div class="menu-grid">
+            <!-- First Row -->
+            <div class="menu-item" data-feed-category="hot">
+                <span>🔥</span>
+                <h2>Hot</h2>
+                <p>Trending Reddit discussions</p>
+            </div>
+            <div class="menu-item" data-feed-category="new">
+                <span>✨</span>
+                <h2>New</h2>
+                <p>Fresh Reddit conversations</p>
+            </div>
+            <div class="menu-item" data-feed-category="rising">
+                <span>📈</span>
+                <h2>Rising</h2>
+                <p>Up and coming posts</p>
+            </div>
+    
+            <!-- Second Row -->
+            <div class="menu-item" data-feed-category="top">
+                <span>🏆</span>
+                <h2>Top</h2>
+                <p>Best posts of the day</p>
+            </div>
+            <div class="menu-item" data-feed-category="popular">
+                <span>⭐</span>
+                <h2>Popular</h2>
+                <p>Most popular Reddit posts</p>
+            </div>
+            <div class="menu-item" data-feed-category="all">
+                <span>🌍</span>
+                <h2>All</h2>
+                <p>Posts from all subreddits</p>
+            </div>
+    
+            <!-- Third Row -->
+            <div class="menu-item" data-feed-category="controversial">
+                <span>⚡</span>
+                <h2>Controversial</h2>
+                <p>Most debated discussions</p>
+            </div>
+            <div class="menu-item" data-feed-category="custom">
+                <span>🔗</span>
+                <h2>Custom URLs</h2>
+                <p>Use your own Reddit links</p>
+            </div>
+            <div class="menu-item" data-feed-category="exit">
+                <span>🚪</span>
+                <h2>Exit</h2>
+                <p>Close the application</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom URLs Section -->
+    <div class="custom-urls-section" id="customUrls" style="display: none;">
+        <!-- Header Section -->
+        <div class="app-header">
+            <h1 class="app-title">Custom Reddit URLs</h1>
+            <div class="header-line"></div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="input-section">
+            <div class="url-input-container">
+                <input type="text" id="urlInput" class="url-input" placeholder="Enter Reddit post URL" />
+                <div class="add-url-text" id="addUrlButton">+ Add URL</div>
+            </div>
+
+            <div class="urls-list-container">
+                <div id="urlsList" class="urls-list">
+                    <!-- Add this structure for URL items -->
+                    <div class="url-item">
+                        <span class="url-number">1</span>
+                        <span class="url-text"></span>
+                        <span class="url-remove" data-index="0">×</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Buttons -->
+        <div class="button-container">
+            <button class="nav-button" id="backButton">← Back to Menu</button>
+            <button class="nav-button" id="generateFromUrlsButton">Generate Video <span class="movie-emoji">🎬</span></button>
+        </div>
+    </div>
+    
+    <!-- Video Playback Section -->
+    <div class="video-section" id="videoSection" style="display: none;">
+        <div class="video-header"> 
+            <h2 class="video-title">Reddit Video Generator</h2>
+            <div class="header-line"></div>
+        </div>
+
+        <div class="top-controls">
+            <!-- This returnButton is referenced in renderer.js -->
+            <button class="control-button" id="returnButton">← Back to Menu</button>
+            <div class="control-button" id="downloadButton">Download Video</div>
+        </div>
+
+        <div class="content-wrapper"> 
+            <div class="video-container">
+                <video 
+                    id="videoBackground" 
+                    autoplay 
+                    loop 
+                    muted 
+                    playsinline 
+                    preload="auto"
+                ></video>
+
+                <div class="reddit-screengrab">
+                    <div class="post-info">
+                        <span class="post-author"></span>
+                        <span class="post-separator">•</span>
+                        <span class="post-time"></span>
+                    </div>
+                    <h2 class="reddit-title"></h2>
+                    <div class="reddit-content"></div>
+                </div>
+                <div class="comment-number"></div>
+                <div class="subtitles-container">
+                    <div class="subtitles"></div>
+                </div>
+            </div>
+
+            <div class="time-info-container">
+                <div class="current-time-container">
+                    <div class="time-label">Current Time</div>
+                    <div class="time-value">00:00</div>
+                </div>
+            
+                <div class="timestamps-section">
+                    <div class="timestamps-heading">Timestamps</div>
+                    <div class="timestamps-list" id="timestampsList"></div>
+                </div>
+
+                <div class="time-controls">
+                    <div class="time-control-group">
+                        <span>⏱ Start Time</span>
+                        <input type="text" id="startTime" class="time-control-input" value="00:00" placeholder="00:00" />
+                    </div>
+                    <div class="time-control-group">
+                        <span>⏱ Duration</span>
+                        <input type="text" id="duration" class="time-control-input" value="00:30" placeholder="00:30" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Download Indicator -->
+    <div class="download-indicator">
+        Downloading Video<span class="jumping-dots"><span>.</span><span>.</span><span>.</span></span>
+    </div>
+
+    <!-- Notifications -->
+    <div id="notifications" style="position: fixed; bottom: 20px; right: 20px; z-index: 2000;">
+        <div class="notification success" id="successNotification" style="display: none;"></div>
+        <div class="notification error" id="errorNotification" style="display: none;"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="renderer.js"></script>
+</body>
+</html>
