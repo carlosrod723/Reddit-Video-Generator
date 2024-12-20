@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "heroku-postbuild": "npm run build"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.713.0",
@@ -38,7 +39,7 @@
     "webpack-dev-server": "^4.15.1"
   },
   "engines": {
-    "node": ">=14"
+    "node": "14.x"
   },
   "license": "MIT"
 }
