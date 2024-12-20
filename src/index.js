@@ -6,7 +6,6 @@ const { Server } = require('socket.io');
 const snoowrap = require('snoowrap');
 const AWS = require('aws-sdk');
 const fs = require('fs').promises;
-const credentials = require('../credentials');
 const videos = require('../public/videos.json');
 
 const app = express();
@@ -37,11 +36,11 @@ const polly = new AWS.Polly();
 let reddit;
 try {
     reddit = new snoowrap({
-        userAgent: credentials.USER_AGENT,
-        clientId: credentials.REDDIT_CLIENT_ID,
-        clientSecret: credentials.REDDIT_CLIENT_SECRET,
-        username: credentials.REDDIT_USERNAME,
-        password: credentials.REDDIT_PASSWORD
+        userAgent: process.env.USER_AGENT,
+        clientId: process.env.REDDIT_CLIENT_ID,
+        clientSecret: process.env.REDDIT_CLIENT_SECRET,
+        username: process.env.REDDIT_USERNAME,
+        password: process.env.REDDIT_PASSWORD
     });
     console.log('Reddit API initialized successfully');
 } catch (error) {
