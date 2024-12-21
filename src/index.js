@@ -75,13 +75,34 @@ function cleanRedditText(text) {
     return { textToRead, textToDisplay: cleanText };
 }
 
-// Generate Speech function
+// Utility function to wrap numbers in <say-as> SSML tags
+function convertNumbersToCardinalSSML(originalText) {
+    return originalText.replace(/\b(\d{1,3}(,\d{3})*|\d+)\b/g, (match) => {
+        const digitsOnly = match.replace(/,/g, "");
+        // Wrap the cleaned number in a <say-as interpret-as="cardinal"> tag
+        return `<say-as interpret-as="cardinal">${digitsOnly}</say-as>`;
+    });
+}
+
+// Generate Speech function using SSML
 async function generateSpeech(text) {
+    // Convert all numeric strings in 'text' to <say-as> SSML
+    const processedText = convertNumbersToCardinalSSML(text);
+
+    // Wrap in <speak> root element for SSML
+    const ssmlText = `<speak>${processedText}</speak>`;
+
     const params = {
         Engine: 'neural',
         LanguageCode: 'en-US',
         OutputFormat: 'mp3',
-        Text: text,
+
+        // Important: 'ssml' tells Polly to parse SSML tags instead of raw text
+        TextType: 'ssml',
+
+        // The final text includes <say-as> tags for numbers
+        Text: ssmlText,
+
         VoiceId: 'Matthew'
     };
 
