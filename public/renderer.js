@@ -955,19 +955,39 @@ class VideoManager {
             console.error('No element found with id="videoBackground". Please ensure it exists in the HTML.');
         }
 
-        // Create an off-DOM video element for preloading
+        // This is a hidden video element for preloading
         this.preloader = document.createElement('video');
         this.preloader.muted = true;
         this.preloader.playsinline = true;
         this.preloader.autoplay = false;
         this.preloader.preload = 'auto';
 
-        // Handle when the preloader can play the next video
+        // Listen for when the preloader can play the new video
         this.preloader.oncanplay = () => {
-            // Once preloader can play, switch main video instantly
+            // Switch the main video to the preloader's source
             this.videoElement.src = this.preloader.src;
             this.videoElement.load();
-            this.videoElement.play().catch(err => console.error('[VideoManager] Video playback error:', err));
+
+            // Hide the post overlay until the new video can actually render a frame
+            // so you don't see a black background behind it.
+            const screengrab = document.querySelector('.reddit-screengrab');
+            if (screengrab) {
+                screengrab.style.display = 'none';
+            }
+
+            // Once the main video is ready to play, fade the overlay back in
+            // (you can use 'canplay' or 'canplaythrough'; either works)
+            this.videoElement.oncanplay = () => {
+                // Show the post overlay again now that the background has loaded
+                if (screengrab) {
+                    screengrab.style.display = 'block';
+                }
+            };
+
+            // Start playing the new background video
+            this.videoElement.play().catch(err => {
+                console.error('[VideoManager] Video playback error:', err);
+            });
         };
     }
 
@@ -975,9 +995,9 @@ class VideoManager {
         console.log('[VideoManager] Preloading video:', url);
         if (!this.videoElement) return;
 
-        // Start loading next video in the preloader
+        // Begin loading the next video into the preloader
         this.preloader.src = url;
-        this.preloader.load(); 
+        this.preloader.load();
     }
 }
 
